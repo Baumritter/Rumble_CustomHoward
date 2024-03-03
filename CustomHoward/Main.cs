@@ -10,12 +10,14 @@ using System.IO;
 using System.Linq;
 using RUMBLE.Interactions.InteractionBase;
 using TMPro;
+using Il2CppSystem.Xml.Schema;
 
 namespace CustomHoward
 {
     public class LogicData : MonoBehaviour
     {
         public string LogicName { get; set; }
+        public float MaxHP { get; set; }
         public float DecisionMin { get; set; }
         public float DecisionMax { get; set; }
         public float ReactionTime { get; set; }
@@ -50,7 +52,7 @@ namespace CustomHoward
     public class CustomHowardClass : MelonMod
     {
         //constants
-        private const double SceneDelay = 5.0;
+        private const double SceneDelay = 6.0;
         private const double RefreshDelay = 3.0;
         private const string BaseFolder = "UserData";
         private const string ModFolder = "CustomHoward";
@@ -81,7 +83,7 @@ namespace CustomHoward
 
         //variables
         private bool debug = false;
-        private bool debug2 = true;
+        private bool debug2 = false;
         private bool HActive = false;
         private bool PrevActive = false;
         private bool loaddelaydone = false;
@@ -184,13 +186,11 @@ namespace CustomHoward
                         Howard_Obj.GetComponent<Howard>().SetCurrentLogicLevel(currentlogicindex);
                         CurrentLogicName = Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name;
                         MelonLogger.Msg("Howard Logic to " + CurrentLogicName);
-                        HActive = true;
-                        Howard_Obj.GetComponent<Howard>().SetHowardLogicActive(HActive);
+                        if (HActive) Howard_Obj.GetComponent<Howard>().SetHowardLogicActive(HActive);
                         dorefresh = false;
                     }
                     if(doreactivate && DateTime.Now >= ReactivateDelay)
                     {
-                        HActive = true;
                         Howard_Obj.GetComponent<Howard>().SetHowardLogicActive(HActive);
                         MelonLogger.Msg("Howard Reactivated after Logic Change");
                         doreactivate = false;
@@ -248,7 +248,7 @@ namespace CustomHoward
 
                 if (debug) MelonLogger.Msg(Stack[k].Stack.name);
 
-                if (PGD[k].StackNumber == Stack_Straight || PGD[k].StackNumber == Stack_Explode || PGD[k].StackNumber == Stack_Kick || PGD[k].StackNumber == Stack_Uppercut) { Stack[k].IsPersistentStack = true; }
+                if (PGD[k].StackNumber == Stack_Straight || PGD[k].StackNumber == Stack_Explode || PGD[k].StackNumber == Stack_Kick || PGD[k].StackNumber == Stack_Uppercut || PGD[k].StackNumber == Stack_Parry || PGD[k].StackNumber == Stack_Stomp) { Stack[k].IsPersistentStack = true; }
                 else { Stack[k].IsPersistentStack = false; }
             }
 
@@ -591,10 +591,7 @@ namespace CustomHoward
         }
         public void TriggerReload()
         {
-            HActive = false;
-            Howard_Obj.GetComponent<Howard>().SetHowardLogicActive(HActive);
-            if (HActive) { ActiveText_Obj.GetComponent<TextMeshProUGUI>().text = "Yes"; }
-            else { ActiveText_Obj.GetComponent<TextMeshProUGUI>().text = "No"; }
+            Howard_Obj.GetComponent<Howard>().SetHowardLogicActive(false);
             Howard_Obj.GetComponent<Howard>().SetCurrentLogicLevel(0);
             GetFromFile();
             MelonLogger.Msg("Refreshed Logic Files");
@@ -614,10 +611,18 @@ namespace CustomHoward
             bool MovementEnable = false;
             float MovementWeight = 0;
             float MovementWeightDec = 0;
+            float MovementSpeed = 0;
+            float MovementMinAngle = 0;
+            float MovementMaxAngle = 0;
+            float DodgeSpeed = 0;
+            float DodgeMinAngle = 0;
+            float DodgeMaxAngle = 0;
 
             LogicData CustomLogic_Obj = new LogicData();
             SeqGenData SGD_Obj = new SeqGenData();
             PoseGenData PGD_Obj;
+            HowardMoveBehaviour BaseMove;
+            HowardMoveBehaviour DodgeMove;
 
             string[] Files;
             string[] Split = new string[2];
@@ -648,6 +653,14 @@ namespace CustomHoward
                             Split[1] = Split[1].Trim(' ');
                             CustomLogic_Obj.LogicName = Split[1];
                             if (debug) MelonLogger.Msg("Name: " + CustomLogic_Obj.LogicName);
+                        }
+                        if (Lines[j].Contains("MaxHP: "))
+                        {
+                            Split.Initialize();
+                            Split = Lines[j].Split(':');
+                            Split[1] = Split[1].Trim(' ');
+                            CustomLogic_Obj.MaxHP = float.Parse(Split[1]);
+                            if (debug) MelonLogger.Msg("MaxHP: " + CustomLogic_Obj.MaxHP.ToString());
                         }
                         if (Lines[j].Contains("DecisionMin: "))
                         {
@@ -768,8 +781,30 @@ namespace CustomHoward
                                 Split = Lines[j + 3].Split(':');
                                 MovementWeightDec = float.Parse(Split[1].Trim(' '));
                                 if (debug) MelonLogger.Msg("Movement WeightDec: " + MovementWeightDec.ToString());
+                                Split = Lines[j + 4].Split(':');
+                                MovementSpeed = float.Parse(Split[1].Trim(' '));
+                                if (debug) MelonLogger.Msg("Movement Speed: " + MovementSpeed.ToString());
+                                Split = Lines[j + 5].Split(':');
+                                MovementMinAngle = float.Parse(Split[1].Trim(' '));
+                                if (debug) MelonLogger.Msg("Movement Min Angle: " + MovementMinAngle.ToString());
+                                Split = Lines[j + 6].Split(':');
+                                MovementMaxAngle = float.Parse(Split[1].Trim(' '));
+                                if (debug) MelonLogger.Msg("Movement Max Angle: " + MovementMaxAngle.ToString());
                             }
                         }
+                        if (Lines[j].Contains("Sequence - Dodge"))
+                        {
+                            Split = Lines[j + 1].Split(':');
+                            DodgeSpeed = float.Parse(Split[1].Trim(' '));
+                            if (debug) MelonLogger.Msg("Dodge Speed: " + DodgeSpeed.ToString());
+                            Split = Lines[j + 2].Split(':');
+                            DodgeMinAngle = float.Parse(Split[1].Trim(' '));
+                            if (debug) MelonLogger.Msg("Dodge Min Angle: " + DodgeMinAngle.ToString());
+                            Split = Lines[j + 3].Split(':');
+                            DodgeMaxAngle = float.Parse(Split[1].Trim(' '));
+                            if (debug) MelonLogger.Msg("Dodge Max Angle: " + DodgeMaxAngle.ToString());
+                        }
+
                         if (Lines[j].Contains("Sequence - Start") && !SeqMarker)
                         {
                             SeqMarker = true;
@@ -871,6 +906,7 @@ namespace CustomHoward
                             Logic_List.Add(new HowardLogic
                             {
                                 name = CustomLogic_Obj.LogicName,
+                                maxHealth = CustomLogic_Obj.MaxHP,
                                 MinMaxDecisionTime = new Vector2(CustomLogic_Obj.DecisionMin, CustomLogic_Obj.DecisionMax),
                                 standStillReactiontime = CustomLogic_Obj.ReactionTime,
                                 howardHeadlightColor = CustomLogic_Obj.HeadLight,
@@ -882,7 +918,18 @@ namespace CustomHoward
                             LatestLogic = Logic_List.Count - 1;
                             if (debug) MelonLogger.Msg("Logic Count");
 
-                            Logic_List[LatestLogic].DodgeBehaviour = Base_Logic_Array[2].DodgeBehaviour;
+                            DodgeMove = new HowardMoveBehaviour
+                            {
+                                name = "CustomDodge",
+                                AnglePerSecond = DodgeSpeed,
+                                minAngle = DodgeMinAngle,
+                                maxAngle = DodgeMaxAngle,
+                                negativeMoveAnimationTrigger = "RockSlideLeft",
+                                positiveMoveAnimationTrigger = "RockSlideRight",
+                                randomizeMovementSign = true
+                            };
+
+                            Logic_List[LatestLogic].DodgeBehaviour = DodgeMove;
                             if (debug) MelonLogger.Msg("Logic Dodge");
 
                             Logic_List[LatestLogic].reactions[0] = ModifyReactions(0, CustomLogic_Obj.Chance_DoSeq);        //ContinueActive
@@ -892,9 +939,37 @@ namespace CustomHoward
 
                             if (MovementEnable)
                             {
-                                SeqSet_List.Add(Base_Logic_Array[2].SequenceSets[3]);//MoveBehaviour
-                                SeqSet_List[0].Weight = MovementWeight;
-                                SeqSet_List[0].WeightDecrementationWhenSelected = MovementWeightDec;
+                                SeqSet_List.Add(new HowardLogic.SequenceSet
+                                {
+                                    RequiredMinMaxRange = new Vector2(0f, float.MaxValue),
+                                    Weight = MovementWeight,
+                                    WeightDecrementationWhenSelected = MovementWeightDec
+                                });
+                                if (debug) MelonLogger.Msg("1");
+                                SeqSet_List[SeqSet_List.Count-1].Sequence = new HowardSequence
+                                {
+                                    name = "CustomMovement",
+                                    BehaviourTimings = new HowardSequence.HowardBehaviourTiming[1]
+                                };
+                                if (debug) MelonLogger.Msg("2");
+                                SeqSet_List[SeqSet_List.Count - 1].Sequence.BehaviourTimings[0] = new HowardSequence.HowardBehaviourTiming 
+                                {
+                                    PostActivationWaitTime = 0f,
+                                    PreActivationWaitTime = 0.5f
+                                };
+                                if (debug) MelonLogger.Msg("3");
+                                BaseMove = new HowardMoveBehaviour
+                                {
+                                    name = "CustomMovement",
+                                    AnglePerSecond = MovementSpeed,
+                                    minAngle = MovementMinAngle,
+                                    maxAngle = MovementMaxAngle,
+                                    negativeMoveAnimationTrigger = "RockSlideLeft",
+                                    positiveMoveAnimationTrigger = "RockSlideRight",
+                                    randomizeMovementSign = true
+                                };
+                                if (debug) MelonLogger.Msg("4");
+                                SeqSet_List[SeqSet_List.Count - 1].Sequence.BehaviourTimings[0].Behaviour = BaseMove;
                                 if (debug) MelonLogger.Msg("Logic Sequence Move");
                             }
 
@@ -909,20 +984,21 @@ namespace CustomHoward
 
             NewLogicAmount = Logic_List.Count;
             OldLogicAmount = Base_Logic_Array.Length;
+            if (debug) MelonLogger.Msg("Get Length: " + NewLogicAmount.ToString() + "|" + OldLogicAmount.ToString());
 
-            HowardLogic[] logicarray = new HowardLogic[OldLogicAmount + NewLogicAmount];
+            HowardLogic[] logicarray = new HowardLogic[(OldLogicAmount + NewLogicAmount)];
+            if (debug) MelonLogger.Msg("Size Array");
 
-            logicarray[0] = Base_Logic_Array[0];
-            logicarray[1] = Base_Logic_Array[1];
-            logicarray[2] = Base_Logic_Array[2];
-
-            for(int i = 0; i < logicarray.Length; i++)
+            for (int i = 0; i < logicarray.Length; i++)
             {
                 if (i < OldLogicAmount) logicarray[i] = Base_Logic_Array[i];
-                if (i >= NewLogicAmount) logicarray[i] = Logic_List[i-OldLogicAmount];
+                if (i >= OldLogicAmount) logicarray[i] = Logic_List[i-OldLogicAmount];
+                if (debug) MelonLogger.Msg("Loop: " + i.ToString());
             }
+            if (debug) MelonLogger.Msg("Applied new logic");
 
             Howard_Obj.GetComponent<Howard>().LogicLevels = logicarray;
+            if (debug) MelonLogger.Msg("Applied all logic");
         }
 
         //Basic Howard Manip

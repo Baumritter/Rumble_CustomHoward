@@ -1,8 +1,8 @@
 {
-  "name": "PoseLogger",
-  "version_number": "1.3.0",
+  "name": "CustomHoward",
+  "version_number": "1.0.0",
   "website_url": "",
-  "description": "Logs poses with the delay from the last pose",
+  "description": "Enables custom movesets via file input for howard",
   "dependencies": [
         "LavaGang-MelonLoader-0.5.7"
   ]

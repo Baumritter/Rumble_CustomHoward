@@ -44,9 +44,13 @@ Sequence - BaseMovement
 		  Weight: 10
  Weight_Decrease: 25
   AnglePerSecond: 25
+		MinAngle: 25
+		MaxAngle: 25
 !--------------------------------
 Sequence - Dodge
   AnglePerSecond: 120
+		MinAngle: 25
+		MaxAngle: 25
 !--------------------------------
 Sequence - Start
 Sequence - Data
@@ -54,7 +58,7 @@ Sequence - Data
 		  Weight: 50
  Weight_Decrease: 25
 		Wait_Pre: 0
-	   Wait_Post: 0.02
+	   Wait_Post: 0.03
 	    RangeMin: 0
 		RangeMax: 50
 Sequence - MoveData

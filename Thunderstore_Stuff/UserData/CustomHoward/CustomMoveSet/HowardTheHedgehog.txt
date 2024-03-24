@@ -22,10 +22,7 @@ DoNothing: 0
 !Moves
 !--------------------------------
 !Available Moves
-! 1 = Flick
-! 2 = HoldRight
 ! 3 = Parry
-! 4 = HoldLeft
 ! 5 = Cube
 ! 7 = Uppercut
 ! 8 = Wall
@@ -41,16 +38,20 @@ DoNothing: 0
 Sequence - Init
 Sequence - BaseMovement
 		  Enable: True
-		  Weight: 10
- Weight_Decrease: 10
-  AnglePerSecond: 240
+		  Weight: 30
+ Weight_Decrease: 30
+  AnglePerSecond: 100000
+		MinAngle: 1
+		MaxAngle: 60
 !--------------------------------
 Sequence - Dodge
-  AnglePerSecond: 240
+  AnglePerSecond: 480
+		MinAngle: 25
+		MaxAngle: 25
 !--------------------------------
 Sequence - Start
 Sequence - Data
-			Name: DiscStraight
+			Name: DiscGoFast
 		  Weight: 25
  Weight_Decrease: 25
 		Wait_Pre: 0
@@ -64,12 +65,43 @@ Sequence - MoveData
 Sequence - MoveData
 		    Move: 14
 	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
 	   Wait_Post: 0
 Sequence - End
 !--------------------------------
 Sequence - Start
 Sequence - Data
-			Name: CubeStruppercut
+			Name: BallGoFast
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 0
+		RangeMax: 50
+Sequence - MoveData
+			Move: 11
+	    Wait_Pre: 0
+	   Wait_Post: 0.3
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: CubeGoFast
 		  Weight: 25
  Weight_Decrease: 25
 		Wait_Pre: 0
@@ -83,7 +115,46 @@ Sequence - MoveData
 Sequence - MoveData
 		    Move: 14
 	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 7
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: WallGoFast
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 0
+		RangeMax: 50
+Sequence - MoveData
+			Move: 8
+	    Wait_Pre: 0
+	   Wait_Post: 0.45
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
 	   Wait_Post: 0.05
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
 Sequence - MoveData
 		    Move: 7
 	    Wait_Pre: 0

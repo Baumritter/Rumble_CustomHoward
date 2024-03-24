@@ -1,16 +1,11 @@
 ﻿using Il2CppSystem;
-using Il2CppSystem.Collections.Generic;
 using MelonLoader;
 using RUMBLE.Environment.Howard;
-using RUMBLE.MoveSystem;
-using System.CodeDom;
-using System.Collections.Generic;
-using UnityEngine;
-using System.IO;
-using System.Linq;
 using RUMBLE.Interactions.InteractionBase;
+using RUMBLE.MoveSystem;
+using System.IO;
 using TMPro;
-using Il2CppSystem.Xml.Schema;
+using UnityEngine;
 
 namespace CustomHoward
 {
@@ -52,29 +47,28 @@ namespace CustomHoward
     public class CustomHowardClass : MelonMod
     {
         //constants
-        private const double SceneDelay = 6.0;
-        private const double RefreshDelay = 3.0;
+        private const double SceneDelay = 8.0;
         private const string BaseFolder = "UserData";
         private const string ModFolder = "CustomHoward";
         private const string MoveFolder = "CustomMoveSet";
 
         //constants - Stack Numbers
         private const int Stack_Explode = 0;
-        private const int Stack_Flick = 1;
-        private const int Stack_HoldR = 2;
+        //private const int Stack_Flick = 1;
+        //private const int Stack_HoldR = 2;
         private const int Stack_Parry = 3;
-        private const int Stack_HoldL = 4;
+        //private const int Stack_HoldL = 4;
         private const int Stack_Cube = 5;
-        private const int Stack_Dash = 6;
+        //private const int Stack_Dash = 6;
         private const int Stack_Uppercut = 7;
         private const int Stack_Wall = 8;
-        private const int Stack_Jump = 9;
+        //private const int Stack_Jump = 9;
         private const int Stack_Kick = 10;
         private const int Stack_Ball = 11;
         private const int Stack_Stomp = 12;
         private const int Stack_Pillar = 13;
         private const int Stack_Straight = 14;
-        private const int Stack_Disc = 15;
+        //private const int Stack_Disc = 15;
 
         //constants - animations
         private const string Anim_Straight = "Straight";
@@ -82,14 +76,11 @@ namespace CustomHoward
         private const string Anim_Spawn = "SpawnStructure";
 
         //variables
-        private bool debug = false;
-        private bool debug2 = false;
-        private bool HActive = false;
-        private bool PrevActive = false;
+        private readonly bool debug = false;
+        private readonly bool debug2 = false;
+        private readonly bool debug3 = false;
         private bool loaddelaydone = false;
         private bool loadlockout = false;
-        private bool dorefresh = false;
-        private bool doreactivate = false;
 
         private int currentlogicindex = 0;
 
@@ -98,17 +89,13 @@ namespace CustomHoward
         private string CurrentLogicName;
 
         private DateTime loaddelay;
-        private DateTime logicRefreshDelay;
         private DateTime ButtonDelay = DateTime.Now;
-        private DateTime ReactivateDelay;
 
         //objects/collections
         private GameObject Howard_Obj;
         private HowardLogic[] Base_Logic_Array = new HowardLogic[3];
         private Il2CppSystem.Collections.Generic.List<Stack> StackList;
-        private GameObject DebugPlayer;
         private GameObject LogicText_Obj;
-        private GameObject ActiveText_Obj;
         private GameObject Lamp_Obj;
 
         //initializes things
@@ -153,20 +140,14 @@ namespace CustomHoward
                     GetFromFile();
                     if (debug) MelonLogger.Msg("GotFromFile");
 
+                    ModifyHowardConsole();
 
-                    CreateControlSlab();
-
-                    LogicText_Obj = GameObject.Find("HowardSlab/SlabCanvas/LogicText");
-                    ActiveText_Obj = GameObject.Find("HowardSlab/SlabCanvas/HowardActiveText");
-                    Lamp_Obj = GameObject.Find("HowardSlab/SlabLamp");
+                    LogicText_Obj = GameObject.Find("--------------LOGIC--------------/Heinhouser products/Howard root/Howards console/Base Plate Custom/Upper Canvas/LogicText");
+                    Lamp_Obj = GameObject.Find("--------------LOGIC--------------/Heinhouser products/Howard root/Howards console/Base Plate Custom/Status Lamp");
                 }
                 else
                 {
                     //Buttons
-                    if (Input.GetKeyDown(KeyCode.KeypadEnter))
-                    {
-                        ButtonHandler(2);
-                    }
                     if (Input.GetKeyDown(KeyCode.KeypadPlus))
                     {
                         ButtonHandler(1);
@@ -175,51 +156,19 @@ namespace CustomHoward
                     {
                         ButtonHandler(0);
                     }
-                    if (Input.GetKeyDown(KeyCode.Keypad0) && !dorefresh)
+                    if (Input.GetKeyDown(KeyCode.Keypad0))
                     {
-                        ButtonHandler(5);
+                        ButtonHandler(2);
                     }
 
-                    //DelayLogic
-                    if (dorefresh && DateTime.Now >= logicRefreshDelay)
+                    if (ButtonDelay <= DateTime.Now)
                     {
-                        Howard_Obj.GetComponent<Howard>().SetCurrentLogicLevel(currentlogicindex);
-                        CurrentLogicName = Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name;
-                        MelonLogger.Msg("Howard Logic to " + CurrentLogicName);
-                        if (HActive) Howard_Obj.GetComponent<Howard>().SetHowardLogicActive(HActive);
-                        dorefresh = false;
+                        Lamp_Obj.transform.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.green);
                     }
-                    if(doreactivate && DateTime.Now >= ReactivateDelay)
+                    else
                     {
-                        Howard_Obj.GetComponent<Howard>().SetHowardLogicActive(HActive);
-                        MelonLogger.Msg("Howard Reactivated after Logic Change");
-                        doreactivate = false;
+                        Lamp_Obj.transform.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.red);
                     }
-
-                    if (HActive != PrevActive)
-                    {
-                        if (HActive) 
-                        { 
-                            ActiveText_Obj.GetComponent<TextMeshProUGUI>().text = "Yes";
-                            Lamp_Obj.transform.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.green);
-                        }
-                        else 
-                        { 
-                            ActiveText_Obj.GetComponent<TextMeshProUGUI>().text = "No"; 
-                            Lamp_Obj.transform.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.red);
-                        }
-                        PrevActive = HActive;
-                    }
-
-                    //DEBUG
-                    if (Input.GetKeyDown(KeyCode.KeypadDivide))
-                    {
-                        DebugPlayer = GameObject.Find("Player Controller(Clone)");
-                        DebugPlayer.transform.position = new Vector3(4f, 0.5f, -20f);
-                        DebugPlayer.transform.eulerAngles = new Vector3(0, 75, 0);
-                        MelonLogger.Msg("Player Moved");
-                    }
-
                 }
 
             }
@@ -274,204 +223,178 @@ namespace CustomHoward
             return Set;
         }
 
-        //Interaction Slab
-        public void CreateControlSlab()
+        //Interaction Panel
+        public void ModifyHowardConsole()
         {
-            #region GameObjects
-            GameObject temp;
-            GameObject Text;
-            GameObject Button_Obj;
-            GameObject OldSlab;
-            GameObject NewSlab;
-            GameObject OldCanvas;
-            GameObject NewCanvas;
-            GameObject BaseButton;
-            GameObject Divider_Obj;
-            GameObject Lamp;
+            #region Definitions
+            GameObject OldCanvas, NewCanvas, OldText, Text, HowardConsole, BasePlate, UpperCanvas, LowerCanvas, OldPlate, LowerPlate, BaseButton, Button_Obj, Lamp;
+
+            int BtAmnt = 3;
+            float Offset = 0.3f;
 
             System.Collections.Generic.List<GameObject> Button = new System.Collections.Generic.List<GameObject>();
             #endregion
 
-            #region Variables / Constants
-            int BtAmnt = 6;
-            float Offset = 0.2f;
+            #region Positions and Rotations
+            Vector3 ConsolePos = new Vector3(-7.57f, 0.1f, -3.51f);
 
-            Vector3 SlabPos = new Vector3(-1f, - 2f, - 25f);
-            Vector3 SlabRot = new Vector3(0f, 90f, 0f);
+            Vector3 BasePlatePos = new Vector3(11.39f, 1.275f, 0.07f);
+            Vector3 BasePlateRot = new Vector3(330f, 91f, 0f);
+            Vector3 BasePlateScl = new Vector3(0.6f, 0.6f, 0.6f);
 
-            Vector3 ButtonSlabOffset = new Vector3(0.8f, -0.2f, 0.055f);
-            Vector3 ButtonBttnOffset = new Vector3(-Offset, 0f, 0f);
-            Vector3 ButtonRot = new Vector3(270f, 180f, 0f);
+            Vector3 UpperCanvasPos = new Vector3(-0.12f, 0.12f,0.34f);
+            Vector3 LowerCanvasPos = new Vector3(0, 0.04f, 0);
+            Vector3 CanvasRot = new Vector3(90,0,0);
 
-            Vector3 TextPos = new Vector3(-0.57f, -0.4f, 0f);
+            Vector3 PlatePos = new Vector3(-0.6f, 0.07f, -0.55f);
+            Vector3 PlateRot = new Vector3(0, 0, 270);
+            Vector3 PlateScl = new Vector3(1, 0.7f, 0.5f);
+
+            Vector3 ButtonSlabOffset = new Vector3(-0.4f, 0.105f, -0.53f);
+            Vector3 ButtonBttnOffset = new Vector3(Offset, 0f, 0f);
+            Vector3 ButtonRot = new Vector3(0f, 180f, 0f);
+            Vector3 ButtonScl = new Vector3(1.25f, 1.25f, 1.25f);
+
+            Vector3 TextPos = new Vector3(-0.4f, -0.73f, -0.07f);
             Vector3 TextRot = new Vector3(0f, 0f, 0f);
 
-            Vector3 CanvasPos = new Vector3(0.03f, 0.3f, 0.056f);
-            Vector3 CanvasRot = new Vector3(0f, 180f, 0f);
+            Vector3 LampPos = new Vector3(0.5166f, 0.03f, 0.503f);
+            Vector3 LampRot = new Vector3(90f, 0f, 0f);
 
-            Vector3 LampPos = new Vector3(-0.45f, 1f, 0f);
-            Vector3 LampRot = new Vector3(30f, 0f, 45f);
-
-            Vector3 TitlePos = new Vector3(0f, 0.5f, 0f);
-            Vector3 DividerBelowTitle = new Vector3(0f, 0.5002f, 0f);
-            Vector3 ActiveLogicTextPos = new Vector3(0, 0.34f, 0f);
-            Vector3 LogicTextPos = new Vector3(0, 0.24f, 0f);
-            Vector3 DividerBelowLogicText = new Vector3(0f, 0.24f, 0f);
-            Vector3 IsHowardActiveText = new Vector3(0, 0.08f, 0f);
-            Vector3 HowardActiveText = new Vector3(0, -0.02f, 0f);
-            Vector3 DividerBelowActiveText = new Vector3(0f, -0.02f, 0f);
-            Vector3 DividerAboveButtonText = new Vector3(-0.08f, -0.3f, 0f);
-            Vector3 DividerBelowButtonText = new Vector3(-0.08f, -0.4f, 0f);
+            Vector3 OneScale = new Vector3(1, 1, 1);
             #endregion
 
-            #region Copy Objects
-            OldSlab = GameObject.Find("--------------LOGIC--------------/Slabbuddy menu variant/MenuForm/Base/Base Mesh");
+            #region Object Find
+            HowardConsole = GameObject.Find("--------------LOGIC--------------/Heinhouser products/Howard root/Howards console").gameObject;
+            BasePlate = GameObject.Instantiate(GameObject.Find("--------------LOGIC--------------/Heinhouser products/MoveLearning/MoveLearnSelector/Model/Move selector"));
             OldCanvas = GameObject.Find("--------------LOGIC--------------/Slabbuddy menu variant/MenuForm/Base/ControlsSlab/GameSlabCanvas");
+            OldPlate = GameObject.Find("--------------LOGIC--------------/Heinhouser products/Leaderboard/Text Objects/Titleplate/LeaderboardTitlePlate");
+
             BaseButton = GameObject.Find("------------TUTORIAL------------/Static tutorials/RUMBLE Starter Guide/Next Page Button/InteractionButton");
             Button_Obj = GameObject.Instantiate(BaseButton);
             Button_Obj.transform.GetChild(0).GetComponent<InteractionButton>().OnPressed.m_PersistentCalls.Clear();
+
+            if (debug3) MelonLogger.Msg("Got Objects");
             #endregion
 
-            #region Slab
-            NewSlab = GameObject.Instantiate(OldSlab);
-            NewSlab.name = "HowardSlab";
-            NewSlab.transform.position = SlabPos;
-            NewSlab.transform.eulerAngles = SlabRot;
-            NewSlab.transform.GetChild(0).name = "SlabMesh";
+            #region Base Console
+            HowardConsole.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
+            HowardConsole.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
+            HowardConsole.transform.localPosition = ConsolePos;
+            if (debug3) MelonLogger.Msg("Did Stuff");
+            #endregion
+
+            #region Custom Base Plate
+            BasePlate.name = "Base Plate Custom";
+            BasePlate.transform.SetParent(HowardConsole.transform);
+            BasePlate.transform.localPosition = BasePlatePos;
+            BasePlate.transform.localEulerAngles = BasePlateRot;
+            BasePlate.transform.localScale = BasePlateScl;
+            if (debug3) MelonLogger.Msg("Did Stuff");
+            #endregion
+
+            #region Lower Plate
+            LowerPlate = GameObject.Instantiate(OldPlate);
+            LowerPlate.name = "Lower Plate";
+            LowerPlate.transform.SetParent(BasePlate.transform);
+            LowerPlate.transform.localPosition = PlatePos;
+            LowerPlate.transform.localEulerAngles = PlateRot;
+            LowerPlate.transform.localScale = PlateScl;
             #endregion
 
             #region Lamp
             Lamp = GameObject.Instantiate(GameObject.Find("--------------LOGIC--------------/Heinhouser products/Telephone 2.0 REDUX special edition/Notification Screen/NotificationLight"));
-            Lamp.name = "SlabLamp";
-            Lamp.transform.SetParent(NewSlab.transform);
+            Lamp.name = "Status Lamp";
+            Lamp.transform.SetParent(BasePlate.transform);
             Lamp.transform.localPosition = LampPos;
             Lamp.transform.localEulerAngles = LampRot;
             Lamp.transform.GetComponent<MeshRenderer>().material = GameObject.Find("--------------LOGIC--------------/Heinhouser products/Howard root/DummyRoot/Howard/Dummy").GetComponent<SkinnedMeshRenderer>().material;
             Lamp.transform.GetComponent<MeshRenderer>().material.EnableKeyword("_EMISSION");
             Lamp.transform.GetComponent<MeshRenderer>().material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.BakedEmissive;
-            Lamp.transform.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.red);
+            Lamp.transform.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", Color.green);
             #endregion
 
             #region Canvas
             NewCanvas = GameObject.Instantiate(OldCanvas);
             NewCanvas.name = "SlabCanvas";
-            NewCanvas.transform.SetParent(NewSlab.transform);
-            NewCanvas.transform.localPosition = CanvasPos;
-            NewCanvas.transform.localEulerAngles = CanvasRot;
+            NewCanvas.transform.SetParent(BasePlate.transform);
+            if (debug3) MelonLogger.Msg("Did Stuff");
             #endregion
 
             #region Move Children to Canvas
-            NewCanvas.transform.GetChild(0).GetChild(0).GetChild(1).name = "Title";
-            NewCanvas.transform.GetChild(0).GetChild(0).GetChild(2).name = "DividerBelowTitle";
-            NewCanvas.transform.GetChild(0).GetChild(0).GetChild(3).name = "BaseDivider";
-            NewCanvas.transform.GetChild(0).GetChild(0).GetChild(3).SetParent(NewCanvas.transform);
-            NewCanvas.transform.GetChild(0).GetChild(0).GetChild(2).SetParent(NewCanvas.transform);
-            NewCanvas.transform.GetChild(0).GetChild(0).GetChild(1).SetParent(NewCanvas.transform);
+            NewCanvas.transform.GetChild(0).GetChild(0).GetChild(1).name = "Text";
+            NewCanvas.transform.GetChild(0).gameObject.SetActive(false);
+            NewCanvas.SetActive(false);
+            OldText = NewCanvas.transform.GetChild(0).GetChild(0).GetChild(1).gameObject;
+            if (debug3) MelonLogger.Msg("Did Stuff");
             #endregion
 
-            temp = GameObject.Instantiate(NewCanvas.transform.GetChild(3).gameObject);
+            #region Canvas (Upper/Lower)
+            UpperCanvas = GameObject.Instantiate(NewCanvas);
+            LowerCanvas = GameObject.Instantiate(NewCanvas);
+            UpperCanvas.SetActive(true);
+            UpperCanvas.name = "Upper Canvas";
+            UpperCanvas.transform.SetParent(BasePlate.transform);
+            UpperCanvas.transform.localPosition = UpperCanvasPos;
+            UpperCanvas.transform.localEulerAngles = CanvasRot;
+            UpperCanvas.transform.localScale = OneScale;
 
-            NewCanvas.transform.FindChild("Title").localPosition = TitlePos;
-            NewCanvas.transform.FindChild("Title").GetComponent<TextMeshProUGUI>().text = "Logic Controller";
-            NewCanvas.transform.FindChild("Title").GetComponent<RectTransform>().sizeDelta = new Vector2(1f, 0.17f);
-            NewCanvas.transform.FindChild("DividerBelowTitle").localPosition = DividerBelowTitle;
-
-            #region DividerBelowButtonText
-            Divider_Obj = GameObject.Instantiate(NewCanvas.transform.FindChild("BaseDivider").gameObject);
-            Divider_Obj.transform.SetParent(NewCanvas.transform);
-            Divider_Obj.name = "DividerBelowButtonText";
-            Divider_Obj.transform.localPosition = DividerBelowButtonText;
-            Divider_Obj.transform.localEulerAngles = TextRot;
+            LowerCanvas.SetActive(true);
+            LowerCanvas.name = "Lower Canvas";
+            LowerCanvas.transform.SetParent(BasePlate.transform);
+            LowerCanvas.transform.localPosition = LowerCanvasPos;
+            LowerCanvas.transform.localEulerAngles = CanvasRot;
+            LowerCanvas.transform.localScale = OneScale;
+            if (debug3) MelonLogger.Msg("Did Stuff");
             #endregion
 
-            #region DividerAboveButtonText
-            Divider_Obj = GameObject.Instantiate(NewCanvas.transform.FindChild("BaseDivider").gameObject);
-            Divider_Obj.transform.SetParent(NewCanvas.transform);
-            Divider_Obj.name = "DividerAboveButtonText";
-            Divider_Obj.transform.localPosition = DividerAboveButtonText;
-            Divider_Obj.transform.localEulerAngles = TextRot;
-            #endregion
-
-            #region DividerBelowLogicText
-            Divider_Obj = GameObject.Instantiate(NewCanvas.transform.FindChild("DividerBelowTitle").gameObject);
-            Divider_Obj.transform.SetParent(NewCanvas.transform);
-            Divider_Obj.name = "DividerBelowLogicText";
-            Divider_Obj.transform.localPosition = DividerBelowLogicText;
-            Divider_Obj.transform.localEulerAngles = TextRot;
-            #endregion
-
-            #region DividerBelowActiveText
-            Divider_Obj = GameObject.Instantiate(NewCanvas.transform.FindChild("DividerBelowTitle").gameObject);
-            Divider_Obj.transform.SetParent(NewCanvas.transform);
-            Divider_Obj.name = "DividerBelowActiveText";
-            Divider_Obj.transform.localPosition = DividerBelowActiveText;
-            Divider_Obj.transform.localEulerAngles = TextRot;
-            #endregion
-
-            #region LogicTextHeader
-            Text = GameObject.Instantiate(temp);
-            Text.transform.SetParent(NewCanvas.transform);
-            Text.name = "ActiveLogicText";
-            Text.transform.localPosition = ActiveLogicTextPos;
-            Text.transform.localEulerAngles = TextRot;
-            Text.GetComponent<TextMeshProUGUI>().text = "Active Logic:";
-            Text.GetComponent<TextMeshProUGUI>().fontSize = 0.12f;
-            Text.GetComponent<RectTransform>().sizeDelta = new Vector2(1f, 0.15f);
-            #endregion
-
-            #region LogicText
-            Text = GameObject.Instantiate(temp);
-            Text.transform.SetParent(NewCanvas.transform);
+            #region Canvas (Upper) - Logic Text
+            Text = GameObject.Instantiate(OldText);
             Text.name = "LogicText";
-            Text.transform.localPosition = LogicTextPos;
-            Text.transform.localEulerAngles = TextRot;
-            Text.GetComponent<TextMeshProUGUI>().text = Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name;
-            Text.GetComponent<TextMeshProUGUI>().fontSize = 0.12f;
-            Text.GetComponent<RectTransform>().sizeDelta = new Vector2(1f,0.15f);
+            Text.transform.SetParent(UpperCanvas.transform);
+            Text.transform.localPosition = Vector3.zero;
+            Text.transform.localEulerAngles = Vector3.zero;
+            Text.transform.localScale = OneScale;
+            Text.GetComponent<TextMeshProUGUI>().text = "Level 1";
+            Text.GetComponent<TextMeshProUGUI>().fontSize = 0.18f;
+            Text.GetComponent<RectTransform>().sizeDelta = new Vector2(2f, 0.24f);
+            if (debug3) MelonLogger.Msg("Did Stuff");
             #endregion
 
-            #region IsHowardActiveText
-            Text = GameObject.Instantiate(temp);
-            Text.transform.SetParent(NewCanvas.transform);
-            Text.name = "IsHowardActiveText";
-            Text.transform.localPosition = IsHowardActiveText;
-            Text.transform.localEulerAngles = TextRot;
-            Text.GetComponent<TextMeshProUGUI>().text = "Is Howard Active ?";
-            Text.GetComponent<TextMeshProUGUI>().fontSize = 0.12f;
-            Text.GetComponent<RectTransform>().sizeDelta = new Vector2(1f, 0.15f);
+            #region Canvas (Lower) - Nothing Rn
+            Text = GameObject.Instantiate(OldText);
+            Text.name = "LogicText";
+            Text.transform.SetParent(LowerCanvas.transform);
+            Text.transform.localPosition = Vector3.zero;
+            Text.transform.localEulerAngles = Vector3.zero;
+            Text.transform.localScale = OneScale;
+            Text.GetComponent<TextMeshProUGUI>().text = "";
+            Text.GetComponent<TextMeshProUGUI>().fontSize = 0.22f;
+            Text.GetComponent<RectTransform>().sizeDelta = new Vector2(2f, 0.24f);
+            if (debug3) MelonLogger.Msg("Did Stuff");
             #endregion
 
-            #region HowardActiveText
-            Text = GameObject.Instantiate(temp);
-            Text.transform.SetParent(NewCanvas.transform);
-            Text.name = "HowardActiveText";
-            Text.transform.localPosition = HowardActiveText;
-            Text.transform.localEulerAngles = TextRot;
-            Text.GetComponent<TextMeshProUGUI>().text = "No";
-            Text.GetComponent<TextMeshProUGUI>().fontSize = 0.12f;
-            Text.GetComponent<RectTransform>().sizeDelta = new Vector2(1f, 0.15f);
-            #endregion
-
-
-            for (int i = 0; i < BtAmnt; i++) 
+            for (int i = 0; i < BtAmnt; i++)
             {
                 Button.Add(GameObject.Instantiate(Button_Obj));
                 Button[i].name = "SlabButton" + (i + 1).ToString();
-                Button[i].transform.SetParent(NewSlab.transform);
-                Button[i].transform.localPosition = ButtonSlabOffset + (ButtonBttnOffset * (i + 1));
+                Button[i].transform.SetParent(BasePlate.transform);
+                Button[i].transform.localPosition = ButtonSlabOffset + (ButtonBttnOffset * (i));
                 Button[i].transform.localEulerAngles = ButtonRot;
+                Button[i].transform.localScale = ButtonScl;
 
-                Text = GameObject.Instantiate(temp);
-                Text.transform.SetParent(NewCanvas.transform);
+                Text = GameObject.Instantiate(OldText);
+                Text.transform.SetParent(LowerCanvas.transform);
                 Text.name = "ButtonText" + (i + 1).ToString();
-                Text.transform.localPosition = TextPos + (-ButtonBttnOffset * (i));
+                Text.transform.localPosition = TextPos + (ButtonBttnOffset * (i));
                 Text.transform.localEulerAngles = TextRot;
+                Text.transform.localScale = OneScale;
 
                 switch (i)
                 {
                     case 0:
                         Text.GetComponent<TextMeshProUGUI>().text = "Prev";
-                        Text.GetComponent<TextMeshProUGUI>().fontSize = 0.08f;
+                        Text.GetComponent<TextMeshProUGUI>().fontSize = 0.1f;
                         Button[i].transform.GetChild(0).GetComponent<InteractionButton>().OnPressed.AddListener(new System.Action(() =>
                         {
                             ButtonHandler(0);
@@ -479,43 +402,36 @@ namespace CustomHoward
                         break;
                     case 1:
                         Text.GetComponent<TextMeshProUGUI>().text = "Next";
-                        Text.GetComponent<TextMeshProUGUI>().fontSize = 0.08f;
+                        Text.GetComponent<TextMeshProUGUI>().fontSize = 0.1f;
                         Button[i].transform.GetChild(0).GetComponent<InteractionButton>().OnPressed.AddListener(new System.Action(() =>
                         {
                             ButtonHandler(1);
                         }));
                         break;
                     case 2:
-                        Text.GetComponent<TextMeshProUGUI>().text = "On/Off";
-                        Text.GetComponent<TextMeshProUGUI>().fontSize = 0.08f;
+                        Text.GetComponent<TextMeshProUGUI>().text = "Reload";
+                        Text.GetComponent<TextMeshProUGUI>().fontSize = 0.1f;
                         Button[i].transform.GetChild(0).GetComponent<InteractionButton>().OnPressed.AddListener(new System.Action(() =>
                         {
                             ButtonHandler(2);
                         }));
                         break;
-                    case 5:
-                        Text.GetComponent<TextMeshProUGUI>().text = "Reload";
-                        Text.GetComponent<TextMeshProUGUI>().fontSize = 0.08f;
-                        Button[i].transform.GetChild(0).GetComponent<InteractionButton>().OnPressed.AddListener(new System.Action(() =>
-                        {
-                            ButtonHandler(5);
-                        }));
-                        break;
                     default:
-                        Text.GetComponent<TextMeshProUGUI>().text = "X";
-                        Text.GetComponent<TextMeshProUGUI>().fontSize = 0.08f;
                         break;
                 }
 
                 Text.GetComponent<TextMeshProUGUI>().autoSizeTextContainer = true;
             }
 
-            NewCanvas.transform.FindChild("BaseDivider").gameObject.SetActive(false);
-
-            GameObject.Destroy(NewCanvas.transform.GetChild(0).gameObject);
+            #region CleanUp
+            GameObject.Destroy(NewCanvas);
+            GameObject.Destroy(UpperCanvas.transform.GetChild(0).gameObject);
+            GameObject.Destroy(LowerCanvas.transform.GetChild(0).gameObject);
             GameObject.Destroy(GameObject.Find("InteractionButton(Clone)"));
             GameObject.Destroy(GameObject.Find("Title(Clone)"));
-        }
+            if (debug3) MelonLogger.Msg("Did Stuff");
+            #endregion
+        } 
 
         //Button Methods
         public void ButtonHandler(int Number)
@@ -533,10 +449,6 @@ namespace CustomHoward
                         ButtonDelay = DateTime.Now.AddSeconds(1);
                         break;
                     case 2:
-                        ToggleHoward();
-                        ButtonDelay = DateTime.Now.AddSeconds(3);
-                        break;
-                    case 5:
                         TriggerReload();
                         ButtonDelay = DateTime.Now.AddSeconds(3);
                         break;
@@ -544,7 +456,6 @@ namespace CustomHoward
                         break;
                 }
                 if (debug2) MelonLogger.Msg("Button pressed");
-
             }
         }
         public void DecreaseLogicIndex()
@@ -553,15 +464,9 @@ namespace CustomHoward
             {
                 currentlogicindex--;
                 Howard_Obj.GetComponent<Howard>().SetCurrentLogicLevel(currentlogicindex);
-                CurrentLogicName = Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name;
+                CurrentLogicName = LogicNameSanitization(Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name);
                 LogicText_Obj.GetComponent<TextMeshProUGUI>().text = CurrentLogicName;
                 MelonLogger.Msg("Howard Logic to " + CurrentLogicName);
-                if (HActive)
-                {
-                    ActiveText_Obj.GetComponent<TextMeshProUGUI>().text = "No";
-                    doreactivate = true;
-                    ReactivateDelay = DateTime.Now.AddSeconds(4);
-                }
             }
         }
         public void IncreaseLogicIndex()
@@ -570,33 +475,20 @@ namespace CustomHoward
             {
                 currentlogicindex++;
                 Howard_Obj.GetComponent<Howard>().SetCurrentLogicLevel(currentlogicindex);
-                CurrentLogicName = Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name;
+                CurrentLogicName = LogicNameSanitization(Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name);
                 LogicText_Obj.GetComponent<TextMeshProUGUI>().text = CurrentLogicName;
                 MelonLogger.Msg("Howard Logic to " + CurrentLogicName);
-                if (HActive)
-                {
-                    ActiveText_Obj.GetComponent<TextMeshProUGUI>().text = "No";
-                    doreactivate = true;
-                    ReactivateDelay = DateTime.Now.AddSeconds(4);
-                }
             }
-        }
-        public void ToggleHoward()
-        {
-            HActive = !HActive;
-            Howard_Obj.GetComponent<Howard>().SetHowardLogicActive(HActive);
-            if (HActive) { ActiveText_Obj.GetComponent<TextMeshProUGUI>().text = "Yes"; }
-            else { ActiveText_Obj.GetComponent<TextMeshProUGUI>().text = "No"; }
-            MelonLogger.Msg("Howard State: " + HActive.ToString());
         }
         public void TriggerReload()
         {
             Howard_Obj.GetComponent<Howard>().SetHowardLogicActive(false);
             Howard_Obj.GetComponent<Howard>().SetCurrentLogicLevel(0);
+            currentlogicindex = 0;
+            CurrentLogicName = LogicNameSanitization(Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name);
+            LogicText_Obj.GetComponent<TextMeshProUGUI>().text = CurrentLogicName;
             GetFromFile();
             MelonLogger.Msg("Refreshed Logic Files");
-            logicRefreshDelay = DateTime.Now.AddSeconds(RefreshDelay);
-            dorefresh = true;
         }
 
 
@@ -1002,7 +894,7 @@ namespace CustomHoward
         }
 
         //Basic Howard Manip
-        public HowardLogic.ReactionChance ModifyReactions(int Index,float Input)
+        private HowardLogic.ReactionChance ModifyReactions(int Index,float Input)
         {
             HowardLogic.ReactionChance temp = new HowardLogic.ReactionChance { Type = HowardLogic.ReactionType.DoNothing, Weight = 0f };
             switch (Index)
@@ -1021,6 +913,42 @@ namespace CustomHoward
                     break;
             }
             return temp;
+        }
+        private string LogicNameSanitization(string Input)
+        {
+            string Output;
+            float fontsize;
+            switch (Input)
+            {
+                case "HowardLevel1":
+                    Output = "Level 1";
+                    break;
+                case "HowardLevel2":
+                    Output = "Level 2";
+                    break;
+                case "HowardLevel3":
+                    Output = "Level 3";
+                    break;
+                default:
+                    if (Input.Length == 0)
+                    {
+                        LogicText_Obj.GetComponent<TextMeshProUGUI>().fontSize = 0.18f;
+                        Output = "No Name";
+                    }
+                    else if (Input.Length >= 12)
+                    {
+                        fontsize = ((float)Input.Length - 12) / 150;
+                        LogicText_Obj.GetComponent<TextMeshProUGUI>().fontSize = 0.18f - fontsize;
+                        Output = Input;
+                    }
+                    else
+                    {
+                        LogicText_Obj.GetComponent<TextMeshProUGUI>().fontSize = 0.18f;
+                        Output = Input;
+                    }
+                    break;
+            }
+            return Output;
         }
 
         //Basic Functions
@@ -1056,7 +984,6 @@ namespace CustomHoward
             currentscene = sceneName;
             loaddelaydone = false;
             loadlockout = false;
-
         }
     }
 }

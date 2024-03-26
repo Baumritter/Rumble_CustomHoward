@@ -53,7 +53,7 @@ namespace CustomHoward
         private const string MoveFolder = "CustomMoveSet";
 
         //constants - Stack Numbers
-        private const int Stack_Explode = 0;
+        //private const int Stack_Explode = 0;
         //private const int Stack_Flick = 1;
         //private const int Stack_HoldR = 2;
         private const int Stack_Parry = 3;
@@ -177,7 +177,7 @@ namespace CustomHoward
 
 
         //Custom Movesets
-        public HowardLogic.SequenceSet CreatePoseSequence(System.Collections.Generic.List<PoseGenData> PGD,SeqGenData SGD)
+        private HowardLogic.SequenceSet CreatePoseSequence(System.Collections.Generic.List<PoseGenData> PGD,SeqGenData SGD)
         {
             HowardLogic.SequenceSet Set = new HowardLogic.SequenceSet();
             HowardSequence Sequence = new HowardSequence();
@@ -189,15 +189,23 @@ namespace CustomHoward
             {
                 Stack[k] = new HowardAttackBehaviour.TimedStack
                 {
-                    Stack = StackList[PGD[k].StackNumber],
                     PreWaitTime = PGD[k].PreWait,
                     PostWaitTime = PGD[k].PostWait,
                     AnimationTriggerName = PGD[k].AnimationName
                 };
 
-                if (debug) MelonLogger.Msg(Stack[k].Stack.name);
+                foreach (Stack stack in StackList)
+                {
+                    if (stack.name == MatchStack(PGD[k].StackNumber))
+                    {
+                        Stack[k].Stack = stack;
+                        break;
+                    }
+                }
 
-                if (PGD[k].StackNumber == Stack_Straight || PGD[k].StackNumber == Stack_Explode || PGD[k].StackNumber == Stack_Kick || PGD[k].StackNumber == Stack_Uppercut || PGD[k].StackNumber == Stack_Parry || PGD[k].StackNumber == Stack_Stomp) { Stack[k].IsPersistentStack = true; }
+                if (debug3) MelonLogger.Msg(Stack[k].Stack.name);
+
+                if (PGD[k].StackNumber == Stack_Straight || PGD[k].StackNumber == Stack_Kick || PGD[k].StackNumber == Stack_Uppercut || PGD[k].StackNumber == Stack_Parry || PGD[k].StackNumber == Stack_Stomp) { Stack[k].IsPersistentStack = true; }
                 else { Stack[k].IsPersistentStack = false; }
             }
 
@@ -221,6 +229,35 @@ namespace CustomHoward
             Set.RequiredMinMaxRange = new Vector2(SGD.RangeMin, SGD.RangeMax);
 
             return Set;
+        }
+
+        private string MatchStack(int StackNumber)
+        {
+            switch (StackNumber)
+            {
+                case 3:
+                    return "Parry";
+                case 5:
+                    return "SpawnCube";
+                case 7:
+                    return "Uppercut";
+                case 8:
+                    return "SpawnWall";
+                case 10:
+                    return "Kick";
+                case 11:
+                    return "SpawnBall";
+                case 12:
+                    return "Stomp";
+                case 13:
+                    return "SpawnPillar";
+                case 14:
+                    return "Straight";
+                case 15:
+                    return "Disc";
+                default:
+                    return "Disc";
+            }
         }
 
         //Interaction Panel
@@ -274,14 +311,14 @@ namespace CustomHoward
             Button_Obj = GameObject.Instantiate(BaseButton);
             Button_Obj.transform.GetChild(0).GetComponent<InteractionButton>().OnPressed.m_PersistentCalls.Clear();
 
-            if (debug3) MelonLogger.Msg("Got Objects");
+            if (debug) MelonLogger.Msg("Got Objects");
             #endregion
 
             #region Base Console
             HowardConsole.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
             HowardConsole.transform.GetChild(1).GetChild(4).gameObject.SetActive(false);
             HowardConsole.transform.localPosition = ConsolePos;
-            if (debug3) MelonLogger.Msg("Did Stuff");
+            if (debug) MelonLogger.Msg("Did Stuff");
             #endregion
 
             #region Custom Base Plate
@@ -290,7 +327,7 @@ namespace CustomHoward
             BasePlate.transform.localPosition = BasePlatePos;
             BasePlate.transform.localEulerAngles = BasePlateRot;
             BasePlate.transform.localScale = BasePlateScl;
-            if (debug3) MelonLogger.Msg("Did Stuff");
+            if (debug) MelonLogger.Msg("Did Stuff");
             #endregion
 
             #region Lower Plate
@@ -318,7 +355,7 @@ namespace CustomHoward
             NewCanvas = GameObject.Instantiate(OldCanvas);
             NewCanvas.name = "SlabCanvas";
             NewCanvas.transform.SetParent(BasePlate.transform);
-            if (debug3) MelonLogger.Msg("Did Stuff");
+            if (debug) MelonLogger.Msg("Did Stuff");
             #endregion
 
             #region Move Children to Canvas
@@ -326,7 +363,7 @@ namespace CustomHoward
             NewCanvas.transform.GetChild(0).gameObject.SetActive(false);
             NewCanvas.SetActive(false);
             OldText = NewCanvas.transform.GetChild(0).GetChild(0).GetChild(1).gameObject;
-            if (debug3) MelonLogger.Msg("Did Stuff");
+            if (debug) MelonLogger.Msg("Did Stuff");
             #endregion
 
             #region Canvas (Upper/Lower)
@@ -345,7 +382,7 @@ namespace CustomHoward
             LowerCanvas.transform.localPosition = LowerCanvasPos;
             LowerCanvas.transform.localEulerAngles = CanvasRot;
             LowerCanvas.transform.localScale = OneScale;
-            if (debug3) MelonLogger.Msg("Did Stuff");
+            if (debug) MelonLogger.Msg("Did Stuff");
             #endregion
 
             #region Canvas (Upper) - Logic Text
@@ -358,7 +395,7 @@ namespace CustomHoward
             Text.GetComponent<TextMeshProUGUI>().text = "Level 1";
             Text.GetComponent<TextMeshProUGUI>().fontSize = 0.18f;
             Text.GetComponent<RectTransform>().sizeDelta = new Vector2(2f, 0.24f);
-            if (debug3) MelonLogger.Msg("Did Stuff");
+            if (debug) MelonLogger.Msg("Did Stuff");
             #endregion
 
             #region Canvas (Lower) - Nothing Rn
@@ -371,7 +408,7 @@ namespace CustomHoward
             Text.GetComponent<TextMeshProUGUI>().text = "";
             Text.GetComponent<TextMeshProUGUI>().fontSize = 0.22f;
             Text.GetComponent<RectTransform>().sizeDelta = new Vector2(2f, 0.24f);
-            if (debug3) MelonLogger.Msg("Did Stuff");
+            if (debug) MelonLogger.Msg("Did Stuff");
             #endregion
 
             for (int i = 0; i < BtAmnt; i++)
@@ -429,7 +466,7 @@ namespace CustomHoward
             GameObject.Destroy(LowerCanvas.transform.GetChild(0).gameObject);
             GameObject.Destroy(GameObject.Find("InteractionButton(Clone)"));
             GameObject.Destroy(GameObject.Find("Title(Clone)"));
-            if (debug3) MelonLogger.Msg("Did Stuff");
+            if (debug) MelonLogger.Msg("Did Stuff");
             #endregion
         } 
 

@@ -1,7 +1,7 @@
 !--------------------------------
 !Logic Setup
 !--------------------------------
-   LogicName: DiscSpammer 
+   LogicName: DiscSpammer4
 	   MaxHP: 20
  DecisionMin: 0
  DecisionMax: 0
@@ -58,7 +58,7 @@ Sequence - Data
 		  Weight: 50
  Weight_Decrease: 25
 		Wait_Pre: 0
-	   Wait_Post: 0.03
+	   Wait_Post: 0.08
 	    RangeMin: 0
 		RangeMax: 50
 Sequence - MoveData

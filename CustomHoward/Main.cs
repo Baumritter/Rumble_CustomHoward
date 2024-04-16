@@ -5,10 +5,19 @@ using RUMBLE.Interactions.InteractionBase;
 using RUMBLE.MoveSystem;
 using System.IO;
 using TMPro;
+using RumbleModUI;
 using UnityEngine;
 
 namespace CustomHoward
 {
+    public static class BuildInfo
+    {
+        public const string ModName = "CustomHoward";
+        public const string ModVersion = "1.0.0";
+        public const string Description = "Makes Howard do scary things";
+        public const string Author = "Baumritter";
+        public const string Company = "";
+    }
     public class LogicData : MonoBehaviour
     {
         public string LogicName { get; set; }
@@ -48,8 +57,6 @@ namespace CustomHoward
     {
         //constants
         private const double SceneDelay = 8.0;
-        private const string BaseFolder = "UserData";
-        private const string ModFolder = "CustomHoward";
         private const string MoveFolder = "CustomMoveSet";
 
         //constants - Stack Numbers
@@ -79,8 +86,7 @@ namespace CustomHoward
         private readonly bool debug = false;
         private readonly bool debug2 = false;
         private readonly bool debug3 = false;
-        private bool loaddelaydone = false;
-        private bool loadlockout = false;
+        private bool LogicLoaded = false;
 
         private int currentlogicindex = 0;
 
@@ -88,8 +94,13 @@ namespace CustomHoward
         private string MoveSetPath;
         private string CurrentLogicName;
 
-        private DateTime loaddelay;
         private DateTime ButtonDelay = DateTime.Now;
+
+        private int LogicMaxPage;
+        private int LogicCurPage = 0;
+        private int LogicLoopMax;
+        private bool LogicLoopRun = false;
+
 
         //objects/collections
         private GameObject Howard_Obj;
@@ -97,14 +108,29 @@ namespace CustomHoward
         private Il2CppSystem.Collections.Generic.List<Stack> StackList;
         private GameObject LogicText_Obj;
         private GameObject Lamp_Obj;
+        private System.Collections.Generic.List<string> LogicNames = new System.Collections.Generic.List<string>();
+        private General.Folders Folders = new General.Folders();
+        private Mod Mod = new Mod();
+        private UI UI = RumbleModUIClass.UI_Obj;
+        private General.Delay Delay = new General.Delay();
+        private General.Delay Haptics = new General.Delay();
+        private General.Delay PageScroll = new General.Delay();
 
         //initializes things
         public override void OnLateInitializeMelon()
         {
             base.OnLateInitializeMelon();
-            CheckandCreateFolder(BaseFolder + @"\" + ModFolder);
-            CheckandCreateFolder(BaseFolder + @"\" + ModFolder + @"\" + MoveFolder);
-            MoveSetPath = BaseFolder + @"\" + ModFolder + @"\" + MoveFolder + @"\";
+            Folders.SetModFolderCustom(BuildInfo.ModName);
+            Folders.AddSubFolder(MoveFolder);
+            Folders.CheckAllFoldersExist();
+
+            Mod.SetName(BuildInfo.ModName);
+            Mod.SetFolder(BuildInfo.ModName);
+            Mod.SetVersion(BuildInfo.ModVersion);
+            Mod.AddToList("Description", ModSetting.AvailableTypes.Description, "", 0, BuildInfo.Description);
+            Mod.AddToList("Reload all Movesets", ModSetting.AvailableTypes.Boolean, "false", 0, "Reloads all Moveset Files");
+
+            MoveSetPath = MelonUtils.UserDataDirectory + @"\" + BuildInfo.ModName + @"\" + MoveFolder + @"\";
         }
 
         //Run every update
@@ -113,10 +139,15 @@ namespace CustomHoward
             //Base Updates
             base.OnUpdate();
 
-            LoadDelayLogic();
+            if(UI.GetInit() && !Mod.GetUIStatus())
+            {
+                UI.AddMod(Mod);
+                MelonLogger.Msg("Added Mod");
+            }
+
 
             //There is no Howard outside the Gym
-            if (currentscene == "Gym" && loaddelaydone)
+            if (currentscene == "Gym" && Delay.Done)
             {
                 if (Howard_Obj == null)
                 {
@@ -147,18 +178,20 @@ namespace CustomHoward
                 }
                 else
                 {
-                    //Buttons
-                    if (Input.GetKeyDown(KeyCode.KeypadPlus))
-                    {
-                        ButtonHandler(1);
-                    }
-                    if (Input.GetKeyDown(KeyCode.KeypadMinus))
-                    {
-                        ButtonHandler(0);
-                    }
-                    if (Input.GetKeyDown(KeyCode.Keypad0))
+                    if (Mod.TempSettings[1].GetValue() == "true" && ButtonDelay <= DateTime.Now)
                     {
                         ButtonHandler(2);
+                        Mod.TempSettings[1].SetValue("false");
+                        Haptics.Delay_Start(0.5, false);
+                    }
+                    if (Haptics.Done)
+                    {
+                        UI.ForceRefresh();
+                        Haptics.Done = false;
+                    }
+                    if (LogicLoaded && UI.IsUIVisible() && UI.IsModSelected(BuildInfo.ModName) && UI.IsOptionSelected("Description") && PageScroll.Done)
+                    {
+                        PageScrollLogic();
                     }
 
                     if (ButtonDelay <= DateTime.Now)
@@ -503,7 +536,7 @@ namespace CustomHoward
                 Howard_Obj.GetComponent<Howard>().SetCurrentLogicLevel(currentlogicindex);
                 CurrentLogicName = LogicNameSanitization(Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name);
                 LogicText_Obj.GetComponent<TextMeshProUGUI>().text = CurrentLogicName;
-                MelonLogger.Msg("Howard Logic to " + CurrentLogicName);
+                if (debug2) MelonLogger.Msg("Howard Logic to " + CurrentLogicName);
             }
         }
         public void IncreaseLogicIndex()
@@ -514,7 +547,7 @@ namespace CustomHoward
                 Howard_Obj.GetComponent<Howard>().SetCurrentLogicLevel(currentlogicindex);
                 CurrentLogicName = LogicNameSanitization(Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name);
                 LogicText_Obj.GetComponent<TextMeshProUGUI>().text = CurrentLogicName;
-                MelonLogger.Msg("Howard Logic to " + CurrentLogicName);
+                if (debug2) MelonLogger.Msg("Howard Logic to " + CurrentLogicName);
             }
         }
         public void TriggerReload()
@@ -525,7 +558,7 @@ namespace CustomHoward
             CurrentLogicName = LogicNameSanitization(Howard_Obj.GetComponent<Howard>().LogicLevels[currentlogicindex].name);
             LogicText_Obj.GetComponent<TextMeshProUGUI>().text = CurrentLogicName;
             GetFromFile();
-            MelonLogger.Msg("Refreshed Logic Files");
+            if (debug2) MelonLogger.Msg("Refreshed Logic Files");
         }
 
 
@@ -561,6 +594,7 @@ namespace CustomHoward
             System.Collections.Generic.List<PoseGenData> PGD_List = new System.Collections.Generic.List<PoseGenData>();
             Il2CppSystem.Collections.Generic.List<HowardLogic.SequenceSet> SeqSet_List = new Il2CppSystem.Collections.Generic.List<HowardLogic.SequenceSet>();
 
+            LogicNames.Clear();
 
             Files = Directory.GetFiles(MoveSetPath);
 
@@ -581,6 +615,7 @@ namespace CustomHoward
                             Split = Lines[j].Split(':');
                             Split[1] = Split[1].Trim(' ');
                             CustomLogic_Obj.LogicName = Split[1];
+                            LogicNames.Add(Split[1]);
                             if (debug) MelonLogger.Msg("Name: " + CustomLogic_Obj.LogicName);
                         }
                         if (Lines[j].Contains("MaxHP: "))
@@ -928,6 +963,7 @@ namespace CustomHoward
 
             Howard_Obj.GetComponent<Howard>().LogicLevels = logicarray;
             if (debug) MelonLogger.Msg("Applied all logic");
+            LogicLoaded = true;
         }
 
         //Basic Howard Manip
@@ -988,39 +1024,69 @@ namespace CustomHoward
             return Output;
         }
 
-        //Basic Functions
-        public void LoadDelayLogic()
+        private void PageScrollLogic()
         {
-            if (!loaddelaydone && !loadlockout)
-            {
-                loaddelay = DateTime.Now.AddSeconds(SceneDelay);
-                loadlockout = true;
-                if (debug) MelonLogger.Msg("LoadDelay: Start.");
-                if (debug) MelonLogger.Msg(loaddelay.ToString());
-            }
-            if (DateTime.Now >= loaddelay && !loaddelaydone)
-            {
-                loaddelaydone = true;
-                if (debug) MelonLogger.Msg("LoadDelay: End.");
-            }
-        }
-        public void CheckandCreateFolder(string Input)
-        {
-            if (!Directory.Exists(Input))
-            {
-                Directory.CreateDirectory(Input);
-                MelonLogger.Msg("Folder: " + Input.ToString() + " created.");
-            }
-        }
+            string temp = BuildInfo.Description + Environment.NewLine;
+            temp += "Custom Movesets: " + Environment.NewLine;
 
+            if (LogicNames.Count <= 10)
+            {
+                foreach (string x in LogicNames)
+                {
+                    temp += x + Environment.NewLine;
+                }
+                Mod.TempSettings[0].SetDescription(temp);
+                UI.ForceRefresh();
+                LogicLoaded = false;
+            }
+            else if (LogicNames.Count > 10 && PageScroll.Done)
+            {
+                if (!LogicLoopRun)
+                {
+                    LogicMaxPage = LogicNames.Count / 10 + 1;
+                    LogicCurPage = 1;
+                    LogicLoopRun = true;
+                }
+
+                if (LogicCurPage == LogicMaxPage)
+                {
+                    for (int i = (LogicMaxPage - 1) * 10; i < LogicNames.Count; i++)
+                    {
+                        temp += LogicNames[i] + Environment.NewLine;
+                    }
+                    LogicLoopRun = false;
+                }
+                if (LogicCurPage < LogicMaxPage)
+                {
+                    //Page 1: 0 - 9
+                    //Page 2: 10 - 19
+                    //Page 3: 20 - 29
+                    //Page 4: ....
+
+                    LogicLoopMax = LogicCurPage * 10;
+
+                    for (int i = LogicLoopMax - 10; i < LogicLoopMax; i++)
+                    {
+                        temp += LogicNames[i] + Environment.NewLine;
+                    }
+
+                    LogicCurPage++;
+
+                }
+
+                Mod.TempSettings[0].SetDescription(temp);
+                UI.ForceRefresh();
+                PageScroll.Delay_Start(3, false);
+            }
+        }
 
         //Overrides
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             base.OnSceneWasLoaded(buildIndex, sceneName);
             currentscene = sceneName;
-            loaddelaydone = false;
-            loadlockout = false;
+            Delay.Delay_Start(SceneDelay, true);
+            PageScroll.Delay_Start(1, false);
         }
     }
 }

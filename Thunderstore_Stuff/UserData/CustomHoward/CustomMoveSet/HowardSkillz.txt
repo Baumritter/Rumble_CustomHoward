@@ -1,0 +1,231 @@
+!--------------------------------
+!Logic Setup
+!--------------------------------
+   LogicName: HowardSkillz 
+	   MaxHP: 20
+ DecisionMin: 0
+ DecisionMax: 0.1
+ReactionTime: 0.2
+!--------------------------------
+!Colors
+!--------------------------------
+  HeadLight: 100,65,165,255
+  IdleColor: 100,65,165,255
+ActiveColor: 100,65,165,255
+!--------------------------------
+!Reaction Chances
+!--------------------------------
+   DoMove: 60
+    Dodge: 30
+DoNothing: 10
+!--------------------------------
+!Moves
+!--------------------------------
+!Available Moves
+! 3 = Parry
+! 5 = Cube
+! 7 = Uppercut
+! 8 = Wall
+! 10 = Kick
+! 11 = Ball
+! 12 = Stomp
+! 13 = Pillar
+! 14 = Straight
+! 15 = Disc
+!--------------------------------
+!################################
+!--------------------------------
+Sequence - Init
+Sequence - BaseMovement
+		  Enable: True
+		  Weight: 30
+ Weight_Decrease: 30
+  AnglePerSecond: 15
+		MinAngle: 10
+		MaxAngle: 50
+!--------------------------------
+Sequence - Dodge
+  AnglePerSecond: 15
+		MinAngle: 15
+		MaxAngle: 15
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: Ulvak_1_1
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 10
+		RangeMax: 12.5
+Sequence - MoveData
+			Move: 8
+	    Wait_Pre: 0
+	   Wait_Post: 0.4
+Sequence - MoveData
+			Move: 5
+	    Wait_Pre: 0
+	   Wait_Post: 0.1
+Sequence - MoveData
+			Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.1
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0.2
+Sequence - MoveData
+			Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.1
+Sequence - MoveData
+			Move: 7
+	    Wait_Pre: 0
+	   Wait_Post: 0.4
+Sequence - MoveData
+			Move: 15
+	    Wait_Pre: 0
+	   Wait_Post: 0.05
+Sequence - MoveData
+			Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: Ulvak_1_2
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 12.5
+		RangeMax: 15
+Sequence - MoveData
+			Move: 8
+	    Wait_Pre: 0
+	   Wait_Post: 0.4
+Sequence - MoveData
+			Move: 5
+	    Wait_Pre: 0
+	   Wait_Post: 0.1
+Sequence - MoveData
+			Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.1
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0.5
+Sequence - MoveData
+			Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.1
+Sequence - MoveData
+			Move: 7
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: Ulvak_2
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 2.5
+		RangeMax: 7.5
+Sequence - MoveData
+			Move: 11
+	    Wait_Pre: 0
+	   Wait_Post: 0.2
+Sequence - MoveData
+			Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: Ulvak_3
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 5
+		RangeMax: 10
+Sequence - MoveData
+			Move: 11
+	    Wait_Pre: 0
+	   Wait_Post: 0.2
+Sequence - MoveData
+			Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.2
+Sequence - MoveData
+			Move: 11
+	    Wait_Pre: 0
+	   Wait_Post: 0.2
+Sequence - MoveData
+			Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: Ulvak_4
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 0
+		RangeMax: 5
+Sequence - MoveData
+			Move: 8
+	    Wait_Pre: 0
+	   Wait_Post: 0.4
+Sequence - MoveData
+			Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.05
+Sequence - MoveData
+			Move: 7
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: Ulvak_5
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 12.5
+		RangeMax: 17.5
+Sequence - MoveData
+			Move: 8
+	    Wait_Pre: 0
+	   Wait_Post: 0.4
+Sequence - MoveData
+			Move: 7
+	    Wait_Pre: 0
+	   Wait_Post: 0.05
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0.05
+Sequence - MoveData
+			Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.05
+Sequence - MoveData
+			Move: 7
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Logic - End
+!--------------------------------

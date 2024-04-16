@@ -1,0 +1,128 @@
+!--------------------------------
+!Logic Setup
+!--------------------------------
+   LogicName: HowardSpaceProgram
+	   MaxHP: 1
+ DecisionMin: 0
+ DecisionMax: 0
+ReactionTime: 0
+!--------------------------------
+!Colors
+!--------------------------------
+  HeadLight: 255,0,255,255
+  IdleColor: 255,0,255,255
+ActiveColor: 255,0,255,255
+!--------------------------------
+!Reaction Chances
+!--------------------------------
+   DoMove: 100
+    Dodge: 0
+DoNothing: 0
+!--------------------------------
+!Moves
+!--------------------------------
+!Available Moves
+! 3 = Parry
+! 5 = Cube
+! 7 = Uppercut
+! 8 = Wall
+! 10 = Kick
+! 11 = Ball
+! 12 = Stomp
+! 13 = Pillar
+! 14 = Straight
+! 15 = Disc
+!--------------------------------
+!################################
+!--------------------------------
+Sequence - Init
+Sequence - BaseMovement
+		  Enable: False
+		  Weight: 30
+ Weight_Decrease: 30
+  AnglePerSecond: 480
+		MinAngle: 10
+		MaxAngle: 60
+!--------------------------------
+Sequence - Dodge
+  AnglePerSecond: 480
+		MinAngle: 25
+		MaxAngle: 25
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: WallGoUp
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0
+	    RangeMin: 0
+		RangeMax: 50
+Sequence - MoveData
+			Move: 13
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+			Move: 10
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Logic - End
+!--------------------------------

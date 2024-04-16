@@ -4,6 +4,7 @@
   "website_url": "",
   "description": "Enables custom movesets via file input for howard",
   "dependencies": [
-        "LavaGang-MelonLoader-0.5.7"
+        "LavaGang-MelonLoader-0.5.7",
+		"Baumritter-RumbleModUI-1.0.1"
   ]
 }

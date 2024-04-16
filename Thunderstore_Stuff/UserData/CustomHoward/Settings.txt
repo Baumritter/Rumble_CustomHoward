@@ -1,0 +1,3 @@
+CustomHoward 1.0.0
+Created by: ModUI 1.0.1
+Reload all Movesets: false

@@ -1,0 +1,165 @@
+!--------------------------------
+!Logic Setup
+!--------------------------------
+   LogicName: HowardTheHedgehog 
+	   MaxHP: 10
+ DecisionMin: 0
+ DecisionMax: 0
+ReactionTime: 0
+!--------------------------------
+!Colors
+!--------------------------------
+  HeadLight: 0,0,200,255
+  IdleColor: 0,0,200,255
+ActiveColor: 0,0,200,255
+!--------------------------------
+!Reaction Chances
+!--------------------------------
+   DoMove: 80
+    Dodge: 20
+DoNothing: 0
+!--------------------------------
+!Moves
+!--------------------------------
+!Available Moves
+! 3 = Parry
+! 5 = Cube
+! 7 = Uppercut
+! 8 = Wall
+! 10 = Kick
+! 11 = Ball
+! 12 = Stomp
+! 13 = Pillar
+! 14 = Straight
+! 15 = Disc
+!--------------------------------
+!################################
+!--------------------------------
+Sequence - Init
+Sequence - BaseMovement
+		  Enable: True
+		  Weight: 30
+ Weight_Decrease: 30
+  AnglePerSecond: 100000
+		MinAngle: 1
+		MaxAngle: 60
+!--------------------------------
+Sequence - Dodge
+  AnglePerSecond: 480
+		MinAngle: 25
+		MaxAngle: 25
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: DiscGoFast
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 0
+		RangeMax: 50
+Sequence - MoveData
+			Move: 15
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: BallGoFast
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 0
+		RangeMax: 50
+Sequence - MoveData
+			Move: 11
+	    Wait_Pre: 0
+	   Wait_Post: 0.3
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: CubeGoFast
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 0
+		RangeMax: 50
+Sequence - MoveData
+			Move: 5
+	    Wait_Pre: 0
+	   Wait_Post: 0.3
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 7
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Sequence - Start
+Sequence - Data
+			Name: WallGoFast
+		  Weight: 25
+ Weight_Decrease: 25
+		Wait_Pre: 0
+	   Wait_Post: 0.3
+	    RangeMin: 0
+		RangeMax: 50
+Sequence - MoveData
+			Move: 8
+	    Wait_Pre: 0
+	   Wait_Post: 0.45
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.05
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 14
+	    Wait_Pre: 0
+	   Wait_Post: 0.01
+Sequence - MoveData
+		    Move: 7
+	    Wait_Pre: 0
+	   Wait_Post: 0
+Sequence - End
+!--------------------------------
+Logic - End
+!--------------------------------

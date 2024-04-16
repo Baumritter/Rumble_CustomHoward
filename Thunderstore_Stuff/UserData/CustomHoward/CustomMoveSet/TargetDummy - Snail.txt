@@ -1,31 +1,28 @@
 !--------------------------------
 !Logic Setup
 !--------------------------------
-   LogicName: DiscSpammer4
-	   MaxHP: 20
+   LogicName: TargetDummy - Snail 
+	   MaxHP: 1000
  DecisionMin: 0
  DecisionMax: 0
 ReactionTime: 0
 !--------------------------------
 !Colors
 !--------------------------------
-  HeadLight: 255,0,0,255
-  IdleColor: 255,0,0,255
-ActiveColor: 255,0,0,255
+  HeadLight: 25,25,25,255
+  IdleColor: 25,25,25,255
+ActiveColor: 25,25,25,255
 !--------------------------------
 !Reaction Chances
 !--------------------------------
-   DoMove: 100
-    Dodge: 0
-DoNothing: 0
+   DoMove: 0
+    Dodge: 50
+DoNothing: 50
 !--------------------------------
 !Moves
 !--------------------------------
 !Available Moves
-! 1 = Flick
-! 2 = HoldRight
 ! 3 = Parry
-! 4 = HoldLeft
 ! 5 = Cube
 ! 7 = Uppercut
 ! 8 = Wall
@@ -40,36 +37,17 @@ DoNothing: 0
 !--------------------------------
 Sequence - Init
 Sequence - BaseMovement
-		  Enable: False
-		  Weight: 10
- Weight_Decrease: 25
-  AnglePerSecond: 25
-		MinAngle: 25
-		MaxAngle: 25
+		  Enable: True
+		  Weight: 30
+ Weight_Decrease: 30
+  AnglePerSecond: 10
+		MinAngle: 10
+		MaxAngle: 50
 !--------------------------------
 Sequence - Dodge
-  AnglePerSecond: 120
-		MinAngle: 25
+  AnglePerSecond: 10
+		MinAngle: 5
 		MaxAngle: 25
-!--------------------------------
-Sequence - Start
-Sequence - Data
-			Name: DiscStraight
-		  Weight: 50
- Weight_Decrease: 25
-		Wait_Pre: 0
-	   Wait_Post: 0.08
-	    RangeMin: 0
-		RangeMax: 50
-Sequence - MoveData
-			Move: 15
-	    Wait_Pre: 0
-	   Wait_Post: 0
-Sequence - MoveData
-		    Move: 14
-	    Wait_Pre: 0
-	   Wait_Post: 0
-Sequence - End
 !--------------------------------
 Logic - End
 !--------------------------------

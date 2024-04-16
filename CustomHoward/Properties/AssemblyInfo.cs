@@ -3,17 +3,18 @@ using MelonLoader;
 using System.Reflection;
 using System.Runtime.InteropServices;
 // ...
-[assembly: MelonInfo(typeof(CustomHowardClass), "CustomHoward", "1.0.0", "Baumritter")]
+[assembly: MelonInfo(typeof(CustomHowardClass), CustomHoward.BuildInfo.ModName, CustomHoward.BuildInfo.ModVersion, CustomHoward.BuildInfo.Author)]
 [assembly: MelonGame("Buckethead Entertainment", "RUMBLE")]
+[assembly: MelonColor(System.ConsoleColor.DarkGreen)]
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CustomHoward")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle(CustomHoward.BuildInfo.ModName)]
+[assembly: AssemblyDescription(CustomHoward.BuildInfo.Description)]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CustomHoward")]
+[assembly: AssemblyCompany(CustomHoward.BuildInfo.Company)]
+[assembly: AssemblyProduct(CustomHoward.BuildInfo.ModName)]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -176,3 +176,5 @@ G:\01_Rumble\10_Mods\Rumble_CustomHoward\CustomHoward\obj\Debug\CustomHoward.csp
 G:\01_Rumble\10_Mods\Rumble_CustomHoward\CustomHoward\obj\Debug\CustomHoward.csproj.CopyComplete
 G:\01_Rumble\10_Mods\Rumble_CustomHoward\CustomHoward\obj\Debug\CustomHoward.dll
 G:\01_Rumble\10_Mods\Rumble_CustomHoward\CustomHoward\obj\Debug\CustomHoward.pdb
+G:\01_Rumble\10_Mods\Rumble_CustomHoward\CustomHoward\bin\Debug\ModUI.dll
+G:\01_Rumble\10_Mods\Rumble_CustomHoward\CustomHoward\bin\Debug\ModUI.pdb

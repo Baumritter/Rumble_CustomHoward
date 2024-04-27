@@ -13,7 +13,7 @@ namespace CustomHoward
     public static class BuildInfo
     {
         public const string ModName = "CustomHoward";
-        public const string ModVersion = "1.0.0";
+        public const string ModVersion = "1.0.1";
         public const string Description = "Makes Howard do scary things";
         public const string Author = "Baumritter";
         public const string Company = "";
@@ -112,6 +112,7 @@ namespace CustomHoward
         private General.Folders Folders = new General.Folders();
         private Mod Mod = new Mod();
         private UI UI = RumbleModUIClass.UI_Obj;
+        private ModSetting<bool> Reload;
         private General.Delay Delay = new General.Delay();
         private General.Delay Haptics = new General.Delay();
         private General.Delay PageScroll = new General.Delay();
@@ -124,11 +125,11 @@ namespace CustomHoward
             Folders.AddSubFolder(MoveFolder);
             Folders.CheckAllFoldersExist();
 
-            Mod.SetName(BuildInfo.ModName);
+            Mod.ModName = BuildInfo.ModName;
+            Mod.ModVersion = BuildInfo.ModVersion;
             Mod.SetFolder(BuildInfo.ModName);
-            Mod.SetVersion(BuildInfo.ModVersion);
-            Mod.AddToList("Description", ModSetting.AvailableTypes.Description, "", 0, BuildInfo.Description);
-            Mod.AddToList("Reload all Movesets", ModSetting.AvailableTypes.Boolean, "false", 0, "Reloads all Moveset Files");
+            Mod.AddToList("Description", ModSetting.AvailableTypes.Description, "", BuildInfo.Description);
+            Reload = Mod.AddToList("Reload all Movesets", false, 0, "Reloads all Moveset Files");
 
             MoveSetPath = MelonUtils.UserDataDirectory + @"\" + BuildInfo.ModName + @"\" + MoveFolder + @"\";
         }
@@ -178,10 +179,10 @@ namespace CustomHoward
                 }
                 else
                 {
-                    if (Mod.TempSettings[1].GetValue() == "true" && ButtonDelay <= DateTime.Now)
+                    if ((bool)Reload.Value == true && ButtonDelay <= DateTime.Now)
                     {
                         ButtonHandler(2);
-                        Mod.TempSettings[1].SetValue("false");
+                        Reload.Value = false;
                         Haptics.Delay_Start(0.5, false);
                     }
                     if (Haptics.Done)
@@ -1035,7 +1036,7 @@ namespace CustomHoward
                 {
                     temp += x + Environment.NewLine;
                 }
-                Mod.TempSettings[0].SetDescription(temp);
+                Mod.Settings[0].Description = temp;
                 UI.ForceRefresh();
                 LogicLoaded = false;
             }
@@ -1073,8 +1074,8 @@ namespace CustomHoward
                     LogicCurPage++;
 
                 }
-
-                Mod.TempSettings[0].SetDescription(temp);
+                
+                Mod.Settings[0].Description = temp;
                 UI.ForceRefresh();
                 PageScroll.Delay_Start(3, false);
             }

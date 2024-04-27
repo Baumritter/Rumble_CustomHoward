@@ -1,10 +1,10 @@
 {
   "name": "CustomHoward",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "",
   "description": "Enables custom movesets via file input for howard",
   "dependencies": [
         "LavaGang-MelonLoader-0.5.7",
-		"Baumritter-RumbleModUI-1.0.1"
+		"Baumritter-RumbleModUI-1.2.0"
   ]
 }

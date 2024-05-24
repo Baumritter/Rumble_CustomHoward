@@ -13,7 +13,7 @@ namespace CustomHoward
     public static class BuildInfo
     {
         public const string ModName = "CustomHoward";
-        public const string ModVersion = "1.0.1";
+        public const string ModVersion = "1.0.2";
         public const string Description = "Makes Howard do scary things";
         public const string Author = "Baumritter";
         public const string Company = "";
@@ -111,7 +111,7 @@ namespace CustomHoward
         private System.Collections.Generic.List<string> LogicNames = new System.Collections.Generic.List<string>();
         private General.Folders Folders = new General.Folders();
         private Mod Mod = new Mod();
-        private UI UI = RumbleModUIClass.UI_Obj;
+        private UI UI = UI.instance;
         private ModSetting<bool> Reload;
         private General.Delay Delay = new General.Delay();
         private General.Delay Haptics = new General.Delay();
@@ -125,11 +125,7 @@ namespace CustomHoward
             Folders.AddSubFolder(MoveFolder);
             Folders.CheckAllFoldersExist();
 
-            Mod.ModName = BuildInfo.ModName;
-            Mod.ModVersion = BuildInfo.ModVersion;
-            Mod.SetFolder(BuildInfo.ModName);
-            Mod.AddToList("Description", ModSetting.AvailableTypes.Description, "", BuildInfo.Description);
-            Reload = Mod.AddToList("Reload all Movesets", false, 0, "Reloads all Moveset Files");
+            UI.UI_Initialized += OnUIInit;
 
             MoveSetPath = MelonUtils.UserDataDirectory + @"\" + BuildInfo.ModName + @"\" + MoveFolder + @"\";
         }
@@ -139,13 +135,6 @@ namespace CustomHoward
         {
             //Base Updates
             base.OnUpdate();
-
-            if(UI.GetInit() && !Mod.GetUIStatus())
-            {
-                UI.AddMod(Mod);
-                MelonLogger.Msg("Added Mod");
-            }
-
 
             //There is no Howard outside the Gym
             if (currentscene == "Gym" && Delay.Done)
@@ -209,6 +198,19 @@ namespace CustomHoward
 
         }
 
+        private void OnUIInit()
+        {
+            Mod.ModName = BuildInfo.ModName;
+            Mod.ModVersion = BuildInfo.ModVersion;
+            Mod.SetFolder(BuildInfo.ModName);
+            Mod.AddDescription("Description", "", BuildInfo.Description);
+            Reload = Mod.AddToList("Reload all Movesets", false, 0, "Reloads all Moveset Files");
+
+            Mod.GetFromFile();
+
+            UI.AddMod(Mod);
+            MelonLogger.Msg("Added Mod.");
+        }
 
         //Custom Movesets
         private HowardLogic.SequenceSet CreatePoseSequence(System.Collections.Generic.List<PoseGenData> PGD,SeqGenData SGD)

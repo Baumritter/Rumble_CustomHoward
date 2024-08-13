@@ -1,5 +1,5 @@
 ﻿using MelonLoader;
-using RUMBLE.Interactions.InteractionBase;
+using Il2CppRUMBLE.Interactions.InteractionBase;
 using System;
 using System.Collections;
 using System.Collections.Generic;

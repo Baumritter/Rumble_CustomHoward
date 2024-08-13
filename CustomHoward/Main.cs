@@ -1,19 +1,21 @@
 ﻿using Il2CppSystem;
 using MelonLoader;
-using RUMBLE.Environment.Howard;
-using RUMBLE.Interactions.InteractionBase;
-using RUMBLE.MoveSystem;
+using Il2CppRUMBLE.Environment.Howard;
+using Il2CppRUMBLE.Interactions.InteractionBase;
+using Il2CppRUMBLE.MoveSystem;
 using System.IO;
-using TMPro;
+using Il2CppTMPro;
 using RumbleModUI;
 using UnityEngine;
+using MelonLoader.Utils;
+using System.Globalization;
 
 namespace CustomHoward
 {
     public static class BuildInfo
     {
         public const string ModName = "CustomHoward";
-        public const string ModVersion = "1.0.2";
+        public const string ModVersion = "1.1.0";
         public const string Description = "Makes Howard do scary things";
         public const string Author = "Baumritter";
         public const string Company = "";
@@ -127,7 +129,7 @@ namespace CustomHoward
 
             UI.UI_Initialized += OnUIInit;
 
-            MoveSetPath = MelonUtils.UserDataDirectory + @"\" + BuildInfo.ModName + @"\" + MoveFolder + @"\";
+            MoveSetPath = MelonEnvironment.UserDataDirectory + @"\" + BuildInfo.ModName + @"\" + MoveFolder + @"\";
         }
 
         //Run every update
@@ -203,8 +205,8 @@ namespace CustomHoward
             Mod.ModName = BuildInfo.ModName;
             Mod.ModVersion = BuildInfo.ModVersion;
             Mod.SetFolder(BuildInfo.ModName);
-            Mod.AddDescription("Description", "", BuildInfo.Description);
-            Reload = Mod.AddToList("Reload all Movesets", false, 0, "Reloads all Moveset Files");
+            Mod.AddDescription("Description", "", BuildInfo.Description, new Tags());
+            Reload = Mod.AddToList("Reload all Movesets", false, 0, "Reloads all Moveset Files", new Tags());
 
             Mod.GetFromFile();
 
@@ -583,6 +585,8 @@ namespace CustomHoward
             float DodgeMinAngle = 0;
             float DodgeMaxAngle = 0;
 
+            CultureInfo IHateDecimals = new CultureInfo("en-US");
+
             LogicData CustomLogic_Obj = new LogicData();
             SeqGenData SGD_Obj = new SeqGenData();
             PoseGenData PGD_Obj;
@@ -626,7 +630,7 @@ namespace CustomHoward
                             Split.Initialize();
                             Split = Lines[j].Split(':');
                             Split[1] = Split[1].Trim(' ');
-                            CustomLogic_Obj.MaxHP = float.Parse(Split[1]);
+                            CustomLogic_Obj.MaxHP = float.Parse(Split[1], IHateDecimals);
                             if (debug) MelonLogger.Msg("MaxHP: " + CustomLogic_Obj.MaxHP.ToString());
                         }
                         if (Lines[j].Contains("DecisionMin: "))
@@ -634,7 +638,7 @@ namespace CustomHoward
                             Split.Initialize();
                             Split = Lines[j].Split(':');
                             Split[1] = Split[1].Trim(' ');
-                            CustomLogic_Obj.DecisionMin = float.Parse(Split[1]);
+                            CustomLogic_Obj.DecisionMin = float.Parse(Split[1], IHateDecimals);
                             if (debug) MelonLogger.Msg("DecisionMin: " + CustomLogic_Obj.DecisionMin.ToString());
                         }
                         if (Lines[j].Contains("DecisionMax: "))
@@ -642,7 +646,7 @@ namespace CustomHoward
                             Split.Initialize();
                             Split = Lines[j].Split(':');
                             Split[1] = Split[1].Trim(' ');
-                            CustomLogic_Obj.DecisionMax = float.Parse(Split[1]);
+                            CustomLogic_Obj.DecisionMax = float.Parse(Split[1], IHateDecimals);
                             if (debug) MelonLogger.Msg("DecisionMax: " + CustomLogic_Obj.DecisionMax.ToString());
                         }
                         if (Lines[j].Contains("ReactionTime: "))
@@ -650,7 +654,7 @@ namespace CustomHoward
                             Split.Initialize();
                             Split = Lines[j].Split(':');
                             Split[1] = Split[1].Trim(' ');
-                            CustomLogic_Obj.ReactionTime = float.Parse(Split[1]);
+                            CustomLogic_Obj.ReactionTime = float.Parse(Split[1], IHateDecimals);
                             if (debug) MelonLogger.Msg("ReactionTime: " + CustomLogic_Obj.ReactionTime.ToString());
                         }
                         //Colors
@@ -711,7 +715,7 @@ namespace CustomHoward
                             Split.Initialize();
                             Split = Lines[j].Split(':');
                             Split[1] = Split[1].Trim(' ');
-                            CustomLogic_Obj.Chance_DoSeq = float.Parse(Split[1]);
+                            CustomLogic_Obj.Chance_DoSeq = float.Parse(Split[1], IHateDecimals);
                             if (debug) MelonLogger.Msg("DoMove: " + CustomLogic_Obj.Chance_DoSeq.ToString());
                         }
                         if (Lines[j].Contains("Dodge: "))
@@ -719,7 +723,7 @@ namespace CustomHoward
                             Split.Initialize();
                             Split = Lines[j].Split(':');
                             Split[1] = Split[1].Trim(' ');
-                            CustomLogic_Obj.Chance_Dodge = float.Parse(Split[1]);
+                            CustomLogic_Obj.Chance_Dodge = float.Parse(Split[1], IHateDecimals);
                             if (debug) MelonLogger.Msg("Dodge: " + CustomLogic_Obj.Chance_Dodge.ToString());
                         }
                         if (Lines[j].Contains("DoNothing: "))
@@ -727,7 +731,7 @@ namespace CustomHoward
                             Split.Initialize();
                             Split = Lines[j].Split(':');
                             Split[1] = Split[1].Trim(' ');
-                            CustomLogic_Obj.Chance_Nothing = float.Parse(Split[1]);
+                            CustomLogic_Obj.Chance_Nothing = float.Parse(Split[1], IHateDecimals);
                             if (debug) MelonLogger.Msg("DoNothing: " + CustomLogic_Obj.Chance_Nothing.ToString());
                         }
                         //Moves / SequenceSets
@@ -743,32 +747,32 @@ namespace CustomHoward
                             if (MovementEnable)
                             {
                                 Split = Lines[j + 2].Split(':');
-                                MovementWeight = float.Parse(Split[1].Trim(' '));
+                                MovementWeight = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("Movement Weight: " + MovementWeight.ToString());
                                 Split = Lines[j + 3].Split(':');
-                                MovementWeightDec = float.Parse(Split[1].Trim(' '));
+                                MovementWeightDec = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("Movement WeightDec: " + MovementWeightDec.ToString());
                                 Split = Lines[j + 4].Split(':');
-                                MovementSpeed = float.Parse(Split[1].Trim(' '));
+                                MovementSpeed = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("Movement Speed: " + MovementSpeed.ToString());
                                 Split = Lines[j + 5].Split(':');
-                                MovementMinAngle = float.Parse(Split[1].Trim(' '));
+                                MovementMinAngle = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("Movement Min Angle: " + MovementMinAngle.ToString());
                                 Split = Lines[j + 6].Split(':');
-                                MovementMaxAngle = float.Parse(Split[1].Trim(' '));
+                                MovementMaxAngle = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("Movement Max Angle: " + MovementMaxAngle.ToString());
                             }
                         }
                         if (Lines[j].Contains("Sequence - Dodge"))
                         {
                             Split = Lines[j + 1].Split(':');
-                            DodgeSpeed = float.Parse(Split[1].Trim(' '));
+                            DodgeSpeed = float.Parse(Split[1].Trim(' '), IHateDecimals);
                             if (debug) MelonLogger.Msg("Dodge Speed: " + DodgeSpeed.ToString());
                             Split = Lines[j + 2].Split(':');
-                            DodgeMinAngle = float.Parse(Split[1].Trim(' '));
+                            DodgeMinAngle = float.Parse(Split[1].Trim(' '), IHateDecimals);
                             if (debug) MelonLogger.Msg("Dodge Min Angle: " + DodgeMinAngle.ToString());
                             Split = Lines[j + 3].Split(':');
-                            DodgeMaxAngle = float.Parse(Split[1].Trim(' '));
+                            DodgeMaxAngle = float.Parse(Split[1].Trim(' '), IHateDecimals);
                             if (debug) MelonLogger.Msg("Dodge Max Angle: " + DodgeMaxAngle.ToString());
                         }
 
@@ -791,27 +795,27 @@ namespace CustomHoward
                                 if (debug) MelonLogger.Msg("AtkName: " + SGD_Obj.AtkName);
 
                                 Split = Lines[j + 2].Split(':');
-                                SGD_Obj.Weight = float.Parse(Split[1].Trim(' '));
+                                SGD_Obj.Weight = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("Weight: " + Split[1].Trim(' '));
 
                                 Split = Lines[j + 3].Split(':');
-                                SGD_Obj.WeightDec = float.Parse(Split[1].Trim(' '));
+                                SGD_Obj.WeightDec = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("Weight_Decrease: " + Split[1].Trim(' '));
 
                                 Split = Lines[j + 4].Split(':');
-                                SGD_Obj.PreWait = float.Parse(Split[1].Trim(' '));
+                                SGD_Obj.PreWait = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("PreWait: " + Split[1].Trim(' '));
 
                                 Split = Lines[j + 5].Split(':');
-                                SGD_Obj.PostWait = float.Parse(Split[1].Trim(' '));
+                                SGD_Obj.PostWait = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("PostWait: " + Split[1].Trim(' '));
 
                                 Split = Lines[j + 6].Split(':');
-                                SGD_Obj.RangeMin = float.Parse(Split[1].Trim(' '));
+                                SGD_Obj.RangeMin = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("RangeMin: " + Split[1].Trim(' '));
 
                                 Split = Lines[j + 7].Split(':');
-                                SGD_Obj.RangeMax = float.Parse(Split[1].Trim(' '));
+                                SGD_Obj.RangeMax = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("RangeMax: " + Split[1].Trim(' '));
                             }
                             if (Lines[j].Contains("Sequence - MoveData"))
@@ -822,10 +826,10 @@ namespace CustomHoward
                                 PGD_Obj.StackNumber = int.Parse(Split[1].Trim(' '));
                                 if (debug) MelonLogger.Msg("MoveNumber: " + PGD_Obj.StackNumber.ToString());
                                 Split = Lines[j + 2].Split(':');
-                                PGD_Obj.PreWait = float.Parse(Split[1].Trim(' '));
+                                PGD_Obj.PreWait = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("PreWait: " + PGD_Obj.PreWait.ToString());
                                 Split = Lines[j + 3].Split(':');
-                                PGD_Obj.PostWait = float.Parse(Split[1].Trim(' '));
+                                PGD_Obj.PostWait = float.Parse(Split[1].Trim(' '), IHateDecimals);
                                 if (debug) MelonLogger.Msg("PostWait: " + PGD_Obj.PostWait.ToString());
 
                                 //AnimationStuff

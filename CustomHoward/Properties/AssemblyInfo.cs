@@ -5,7 +5,9 @@ using System.Runtime.InteropServices;
 // ...
 [assembly: MelonInfo(typeof(CustomHowardClass), CustomHoward.BuildInfo.ModName, CustomHoward.BuildInfo.ModVersion, CustomHoward.BuildInfo.Author)]
 [assembly: MelonGame("Buckethead Entertainment", "RUMBLE")]
-[assembly: MelonColor(System.ConsoleColor.DarkGreen)]
+[assembly: VerifyLoaderVersion(0, 6, 4, true)]
+[assembly: MelonColor(200, 0, 200, 0)]
+[assembly: MelonAuthorColor(200, 0, 200, 0)]
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information

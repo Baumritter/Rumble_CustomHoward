@@ -37,73 +37,93 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Il2CppBucketheadEntertainment.Plugins">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppBucketheadEntertainment.Plugins.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppBucketheadEntertainment.Plugins.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppInterop.Common">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppInterop.Generator">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\Il2CppInterop.Generator.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\Il2CppInterop.Generator.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppInterop.Runtime">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2Cppmscorlib, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppRUMBLE.AssetStore">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.AssetStore.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.AssetStore.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppRUMBLE.AssetStore.ModernUIPack">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.AssetStore.ModernUIPack.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.AssetStore.ModernUIPack.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppRUMBLE.Platform">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Platform.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Platform.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppRUMBLE.Platform.Info">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Platform.Info.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Platform.Info.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppRUMBLE.Platform.Info.Steam">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Platform.Info.Steam.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Platform.Info.Steam.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppRUMBLE.Plugins">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Plugins.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Plugins.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppRUMBLE.Rendering">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Rendering.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Rendering.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppRUMBLE.Runtime">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Runtime.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Il2CppRUMBLE.Runtime.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="MelonLoader, Version=0.5.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\MelonLoader.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\MelonLoader.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="MelonLoader.NativeHost">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\MelonLoader.NativeHost.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\MelonLoader.NativeHost.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="MelonStartScreen">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\MelonStartScreen.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\net6\MelonStartScreen.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ModUI, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\Mods\ModUI.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\Mods\ModUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>A:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>G:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)obj\Debug\$(TargetFileName)" "A:\SteamLibrary\steamapps\common\RUMBLE\Mods\" /F /Y /E</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)obj\Debug\$(TargetFileName)" "G:\SteamLibrary\steamapps\common\RUMBLE\Mods\" /F /Y /E</PostBuildEvent>
   </PropertyGroup>
 </Project>

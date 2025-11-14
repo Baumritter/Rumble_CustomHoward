@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/CustomHoward/.vs/CustomHoward/CopilotIndices/18.0.912.14514
+/.vs
+/CustomHoward/.vs/CustomHoward/copilot-chat/8a60f88d/sessions

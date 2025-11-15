@@ -188,3 +188,9 @@ G:\01_Rumble\10_Mods\Rumble_CustomHoward\CustomHoward\bin\Debug\Il2CppPhotonVoic
 G:\01_Rumble\10_Mods\Rumble_CustomHoward\CustomHoward\bin\Debug\System.Text.Json.dll
 G:\01_Rumble\10_Mods\Rumble_CustomHoward\CustomHoward\bin\Debug\Microsoft.Diagnostics.NETCore.Client.dll
 G:\01_Rumble\10_Mods\Rumble_CustomHoward\CustomHoward\obj\Debug\CustomHo.2B4F1072.Up2Date
+D:\Users\iList\Repos\CustomHoward\CustomHoward\bin\Debug\CustomHoward.dll
+D:\Users\iList\Repos\CustomHoward\CustomHoward\bin\Debug\CustomHoward.pdb
+D:\Users\iList\Repos\CustomHoward\CustomHoward\obj\Debug\CustomHoward.csproj.AssemblyReference.cache
+D:\Users\iList\Repos\CustomHoward\CustomHoward\obj\Debug\CustomHoward.csproj.CoreCompileInputs.cache
+D:\Users\iList\Repos\CustomHoward\CustomHoward\obj\Debug\CustomHoward.dll
+D:\Users\iList\Repos\CustomHoward\CustomHoward\obj\Debug\CustomHoward.pdb
